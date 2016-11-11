@@ -33,7 +33,7 @@ export class BackendHttpService implements BackendService {
 
     public find<T extends Identifiable>(type: Type<T>, id: number): Observable<T> {
         return this.findAll<T>(type)
-        .map((items: T[]) => items.find(item => item.id === id))
+        .map((items: T[]) => items.find(item => item.id === id)[0])
         .do((item) => this.logger.log(`Fetched ${item.id}.`))
         .catch(this.handleErrorObservable)
 
