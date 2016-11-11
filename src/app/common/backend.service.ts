@@ -4,16 +4,14 @@ import { Observable } from 'rxjs/Observable';
 
 export abstract class BackendService {
 
-  public abstract getCollectionObservable<T extends Identifiable>(type: Type<T>): Observable<T[]>;
+  public abstract findAll<T extends Identifiable>(type: Type<T>): Observable<T[]>;
 
-  public abstract getIndividualObservable<T extends Identifiable>(type: Type<T>, id: number): Observable<T>;
+  public abstract find<T extends Identifiable>(type: Type<T>, id: number): Observable<T>;
 
-  public abstract refreshCollection<T extends Identifiable>(type: Type<T>): Promise<void>;
+  public abstract addItem<T extends Identifiable>(type: Type<T>, item: T): Observable<T>;
 
-  public abstract addItem<T extends Identifiable>(type: Type<T>, item: T): Promise<void>;
+  public abstract editItem<T extends Identifiable>(type: Type<T>, item: T): Observable<T>;
 
-  public abstract editItem<T extends Identifiable>(type: Type<T>, item: T): Promise<void>;
-
-  public abstract deleteItem<T extends Identifiable>(type: Type<T>, itemId: number): Promise<void>;
+  public abstract deleteItem<T extends Identifiable>(type: Type<T>, id: number): Observable<T>;
 
 }

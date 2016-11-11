@@ -6,127 +6,89 @@ import { Identifiable } from './common.interfaces';
 import { BackendService } from './backend.service';
 import { API_BASE_URL } from './common.module';
 import { Subject, BehaviorSubject, Observable } from 'rxjs/Rx';
+import { Contact } from '../contacts/contact.model';
 
 
 @Injectable()
 export class BackendHttpService implements BackendService {
-    private apiBaseUrl: string;
+    private baseUrl: string;
     private headers = new Headers({ 'Content-Type': 'application/json' });
     private options = new RequestOptions({ headers: this.headers });
 
-    constructor( @Inject('API_BASE_URL') apiBaseUrl: string, private http: Http, private logger: Logger) {
-        this.apiBaseUrl = apiBaseUrl;
+    constructor( @Inject('API_BASE_URL') baseUrl: string, private http: Http, private logger: Logger) {
+        this.baseUrl = baseUrl;
     }
 
-    public getCollectionObservable<T extends Identifiable>(type: Type<T>, reloadCache?: boolean): Observable<T[]> {
-        return this.cache.getCollectionObservable(type);
+    public findAll<T extends Identifiable>(type: Type<T>): Observable<T[]> {
+        let collection = type.name.toLowerCase() + 's';
+        if (type.name !== Contact.name ) {
+        let err = new Error(`Cannot recognize entity type: ${type.name}`);
+            this.handleErrorObservable(err);
+        }
+        return this.http.get(this.baseUrl + '/' + collection)
+        .map(response => response.json().data as T[])
+        .do(items => this.logger.log(`Fetched ${items.length} ${collection}.`))
+        .catch(this.handleErrorObservable)
     }
 
-    public getIndividualObservable<T extends Identifiable>(type: Type<T>, id: number): Observable<T> {
-        return this.cache.getIndividualObservable(type, id);
+    public find<T extends Identifiable>(type: Type<T>, id: number): Observable<T> {
+        return this.findAll<T>(type)
+        .map((items: T[]) => items.find(item => item.id === id))
+        .do((item) => this.logger.log(`Fetched ${item.id}.`))
+        .catch(this.handleErrorObservable)
+
+
     }
 
-    public refreshCollection<T extends Identifiable>(type: Type<T>, force: boolean = false): Promise<void> {
+
+    public addItem<T extends Identifiable>(type: Type<T>, item: T): Observable<T> {
         let collection: string;
         switch (type.name) {
-            case Product.name:
-                collection = 'products';
-                break;
-            case User.name:
-                collection = 'users';
+            case Contact.name:
+                collection = 'contacts';
                 break;
             default:
                 let err = new Error(`Cannot recognize entity type: ${type.name}`);
-                this.cache.getOperationsSubject(type).error(err);
         }
         // call the HTTP API and return the Promise
-        let apiUrl = this.apiBaseUrl + '/' + collection;
-        // if (this.cache.isFresh(type)) {
-        //     this.logger.log(`Fetching ${collection} from cache .`);
-        //     this.cache.nextCollectionData(type);
-        //     return Promise.resolve();
-        // } else {
-        return this.http.get(apiUrl)
-            .map(response => response.json().data || [] as T[])
-            .catch(this.handleErrorObservable)
-            .forEach(data => {
-                this.logger.log(`Fetched ${data.length} ${collection}.`);
-                this.cache.nextCollectionData(type, data);
-            });
-
-    }
-
-    public addItem<T extends Identifiable>(type: Type<T>, item: T): Promise<void> {
-        let collection: string;
-        switch (type.name) {
-            case Product.name:
-                collection = 'products';
-                break;
-            case User.name:
-                collection = 'users';
-                break;
-            default:
-                let err = new Error(`Cannot recognize entity type: ${type.name}`);
-                this.cache.getOperationsSubject(type).error(err);
-        }
-        // call the HTTP API and return the Promise
-        let apiUrl = this.apiBaseUrl + '/' + collection;
+        let apiUrl = this.baseUrl + '/' + collection;
         return this.http.post(apiUrl, JSON.stringify(item), this.options)
             .map(res => res.json().data)
             .catch(this.handleErrorObservable)
-            .forEach(itemData => {
-                this.logger.log(`Created ${type.name}: ${JSON.stringify(itemData)}`);
-                this.cache.addCollectionItem(type, itemData); // apply changes immediately
-                this.refreshCollection(type); // schedule async collection refresh
-            });
     }
 
-    public editItem<T extends Identifiable>(type: Type<T>, item: T): Promise<void> {
+    public editItem<T extends Identifiable>(type: Type<T>, item: T): Observable<T> {
         let resource: string;
         switch (type.name) {
-            case Product.name:
-                resource = 'products';
-                break;
-            case User.name:
-                resource = 'users';
+            case Contact.name:
+                resource = 'contacts';
                 break;
             default:
                 let err = new Error(`Cannot recognize entity type: ${type.name}`);
-                this.cache.getOperationsSubject(type).error(err);
+                this.handleErrorObservable(err);
         }
         // call the HTTP API and return the Promise
-        let apiUrl = this.apiBaseUrl + '/' + resource + '/' + item.id;
+        let apiUrl = this.baseUrl + '/' + resource + '/' + item.id;
         return this.http.put(apiUrl, JSON.stringify(item), this.options)
             .catch(this.handleErrorObservable)
-            .forEach(() => {
-                this.logger.log(`Edited ${type.name}: ${JSON.stringify(item)}`);
-                this.cache.editCollectionItem(type, item); // apply changes immediately
-                // this.refreshCollection(type); // schedule async collection refresh
-            });
+            .do(()=> this.logger.log(`Edited ${type.name}: ${JSON.stringify(item)}`);)
     }
 
-    public deleteItem<T extends Identifiable>(type: Type<T>, itemId: number): Promise<void> {
+    public deleteItem<T extends Identifiable>(type: Type<T>, itemId: number): Observable<void> {
         let resource: string;
         switch (type.name) {
-            case Product.name:
-                resource = 'products';
-                break;
-            case User.name:
-                resource = 'users';
+            case Contact.name:
+                resource = 'contacts';
                 break;
             default:
                 let err = new Error(`Cannot recognize entity type: ${type.name}`);
-                this.cache.getOperationsSubject(type).error(err);
+                this.handleErrorObservable(err);
         }
         // call the HTTP API and return the Promise
-        let apiUrl = this.apiBaseUrl + '/' + resource + '/' + itemId;
+        let apiUrl = this.baseUrl + '/' + resource + '/' + itemId;
         return this.http.delete(apiUrl, this.options)
             .catch(this.handleErrorObservable)
-            .forEach(() => {
-                this.logger.log(`Deleted ${type.name} with ID: ${itemId}`);
-                this.cache.deleteCollectionItem(type, itemId); // apply changes immediately
-                this.refreshCollection(type); // schedule async collection refresh
-            });
+            .do(()=> this.logger.log(`Deleted ${type.name} with ID: ${itemId}`);)
     }
 
 
