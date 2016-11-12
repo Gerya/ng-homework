@@ -6,25 +6,25 @@ import { Contact } from './contact.model';
 
 @Injectable()
 export class ContactService{
-     constructor( private backend: BackendService ){}
+     constructor( private backend: BackendService ){ debugger;}
 
      public getContacts():Observable<Contact[]>{
-        return  this.backend.findAll(Contact)
+        return  this.backend.findAll(Contact);
      }
 
-     public getProduct(id:number):Observable<Contact>{
+     public getContact(id:number):Observable<Contact>{
             return this.backend.find(Contact, id);
      }
      
-     public addProduct(contact: Contact): Observable<Contact> {
+     public addContact(contact: Contact): Observable<Contact> {
         return this.backend.addItem(Contact, contact);
     }
 
-    public editProduct(contact: Contact): Observable<Contact> {
+    public editContact(contact: Contact): Observable<Contact> {
         return this.backend.editItem(Contact, contact);
     }
 
-    public deleteProduct(id: number): Observable<Contact> {
+    public deleteContact(id: number): Observable<void> {
         return this.backend.deleteItem(Contact, id);
     }
  }

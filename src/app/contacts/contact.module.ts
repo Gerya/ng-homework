@@ -2,6 +2,8 @@ import { BrowserModule }       from '@angular/platform-browser';
 import { ReactiveFormsModule }         from '@angular/forms';
 import { NgModule }     from '@angular/core';
 import { ContactService } from './contact.service';
+import {ContactListComponent} from './contact-list.component';
+
 
 @NgModule({
   imports: [
@@ -9,11 +11,7 @@ import { ContactService } from './contact.service';
     ReactiveFormsModule
   ],
   providers: [ContactService],
-  declarations: [
-
-  ],
-  exports: [
-
-  ]
+  declarations: [ ContactListComponent ],
+  exports: [ContactListComponent]
 })
 export class ContactModule { }

@@ -12,6 +12,6 @@ export abstract class BackendService {
 
   public abstract editItem<T extends Identifiable>(type: Type<T>, item: T): Observable<T>;
 
-  public abstract deleteItem<T extends Identifiable>(type: Type<T>, id: number): Observable<T>;
+  public abstract deleteItem<T extends Identifiable>(type: Type<T>, id: number): Observable<void>;
 
 }

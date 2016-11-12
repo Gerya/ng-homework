@@ -4,8 +4,7 @@ import { Headers, Http, RequestOptions, Response } from '@angular/http';
 import { Logger } from './logger.service';
 import { Identifiable } from './common.interfaces';
 import { BackendService } from './backend.service';
-import { API_BASE_URL } from './common.module';
-import { Subject, BehaviorSubject, Observable } from 'rxjs/Rx';
+import { Observable } from 'rxjs/Rx';
 import { Contact } from '../contacts/contact.model';
 
 
@@ -16,6 +15,7 @@ export class BackendHttpService implements BackendService {
     private options = new RequestOptions({ headers: this.headers });
 
     constructor( @Inject('API_BASE_URL') baseUrl: string, private http: Http, private logger: Logger) {
+        debugger;
         this.baseUrl = baseUrl;
     }
 
@@ -71,7 +71,7 @@ export class BackendHttpService implements BackendService {
         let apiUrl = this.baseUrl + '/' + resource + '/' + item.id;
         return this.http.put(apiUrl, JSON.stringify(item), this.options)
             .catch(this.handleErrorObservable)
-            .do(()=> this.logger.log(`Edited ${type.name}: ${JSON.stringify(item)}`);)
+            .do(()=> this.logger.log(`Edited ${type.name}: ${JSON.stringify(item)}`))
     }
 
     public deleteItem<T extends Identifiable>(type: Type<T>, itemId: number): Observable<void> {
@@ -88,7 +88,7 @@ export class BackendHttpService implements BackendService {
         let apiUrl = this.baseUrl + '/' + resource + '/' + itemId;
         return this.http.delete(apiUrl, this.options)
             .catch(this.handleErrorObservable)
-            .do(()=> this.logger.log(`Deleted ${type.name} with ID: ${itemId}`);)
+            .do(()=> this.logger.log(`Deleted ${type.name} with ID: ${itemId}`))
     }
 
 
