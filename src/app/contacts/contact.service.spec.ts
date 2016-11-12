@@ -1,18 +1,26 @@
 import { Contact } from './contact.model';
 import { ContactService } from './contact.service';
 import { BackendService } from '../common/backend.service';
-import { TestBed, getTestBed } from '@angular/core/testing';
+import { TestBed, getTestBed, ComponentFixture } from '@angular/core/testing';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
+import { ContactListComponent } from './contact-list.component';
 
 describe('Service: ContactService', () => {
-    var service:ContactService
+    let service:ContactService
+    let componet:ComponentFixture<ContactListComponent>
+    let spy: jasmine.Spy;
+
     beforeEach(() => {
          TestBed.configureTestingModule({
              providers: [BackendService, ContactService],
+             declarations:[ContactListComponent]
         });
-         const testbed = getTestBed();
+        componet = TestBed.createComponent(ContactListComponent);
+        const testbed = getTestBed();
         service = testbed.get(ContactService);
+        //service =  componet.debugElement.injector.get(ContactService);
+
     });
     it('should return the list of contacts from the server on success', () => {
         service.getContacts().subscribe((data: Contact[]) => {

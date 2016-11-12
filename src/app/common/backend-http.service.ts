@@ -15,7 +15,6 @@ export class BackendHttpService implements BackendService {
     private options = new RequestOptions({ headers: this.headers });
 
     constructor( @Inject('API_BASE_URL') baseUrl: string, private http: Http, private logger: Logger) {
-        debugger;
         this.baseUrl = baseUrl;
     }
 
@@ -36,10 +35,7 @@ export class BackendHttpService implements BackendService {
         .map((items: T[]) => items.find(item => item.id === id)[0])
         .do((item) => this.logger.log(`Fetched ${item.id}.`))
         .catch(this.handleErrorObservable)
-
-
     }
-
 
     public addItem<T extends Identifiable>(type: Type<T>, item: T): Observable<T> {
         let collection: string;
