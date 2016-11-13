@@ -6,7 +6,7 @@ import { Contact } from './contact.model';
 
 @Injectable()
 export class ContactService{
-     constructor( private backend: BackendService ){ debugger;}
+     constructor( private backend: BackendService ){ }
 
      public getContacts():Observable<Contact[]>{
         return  this.backend.findAll(Contact);

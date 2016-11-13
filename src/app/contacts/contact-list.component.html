@@ -1,3 +1,18 @@
-<div>
-    Alabala
+<div class="contacts-list row">
+  <h2>Contact List</h2>
+
+  <p><i>Select a contact</i></p>
+  <ul class="items list-unstyled" >
+    <li *ngFor="let contact of contacts"  [class.selected]="contact.id === selectedId"  
+      (click)="selectItem(contact)">
+      <span class="item-badge">{{contact.id}}</span> {{contact.name}} - {{contact.family}}
+      <span class="remove-item glyphicon glyphicon-remove-circle danger pull-right btn btn-default" (click)="deleteItem(contact.id); $event.stopPropagation()" 
+        aria-hidden="true" title="Click to delete this contact.">
+      </span>
+    </li>
+  </ul>
+  <div *ngIf="errorMessage" class="alert alert-danger">{{errorMessage}}<div>
+
+ <!-- <hr>
+  <product-detail *ngIf="selectedProduct" [product]="selectedProduct"></product-detail> -->
 </div>

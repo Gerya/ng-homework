@@ -46,7 +46,6 @@ export class BackendHttpService implements BackendService {
             default:
                 let err = new Error(`Cannot recognize entity type: ${type.name}`);
         }
-        // call the HTTP API and return the Promise
         let apiUrl = this.baseUrl + '/' + collection;
         return this.http.post(apiUrl, JSON.stringify(item), this.options)
             .map(res => res.json().data)
@@ -63,7 +62,7 @@ export class BackendHttpService implements BackendService {
                 let err = new Error(`Cannot recognize entity type: ${type.name}`);
                 this.handleErrorObservable(err);
         }
-        // call the HTTP API and return the Promise
+
         let apiUrl = this.baseUrl + '/' + resource + '/' + item.id;
         return this.http.put(apiUrl, JSON.stringify(item), this.options)
             .catch(this.handleErrorObservable)
@@ -80,7 +79,7 @@ export class BackendHttpService implements BackendService {
                 let err = new Error(`Cannot recognize entity type: ${type.name}`);
                 this.handleErrorObservable(err);
         }
-        // call the HTTP API and return the Promise
+
         let apiUrl = this.baseUrl + '/' + resource + '/' + itemId;
         return this.http.delete(apiUrl, this.options)
             .catch(this.handleErrorObservable)

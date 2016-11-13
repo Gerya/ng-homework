@@ -2,13 +2,17 @@
 
 import { TestBed, async } from '@angular/core/testing';
 import { AppComponent } from './app.component';
+import { RouterModule, Router } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
+
+class MockRouter { public navigate() {}; }
 
 describe('App: NgHomework', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [
-        AppComponent
-      ],
+      providers: [ RouterModule, { provide: Router, useClass: class { navigate = jasmine.createSpy("navigate"); } }],
+      declarations: [ AppComponent ],
+      imports: [ RouterTestingModule ]
     });
   });
 
