@@ -14,7 +14,7 @@ import { Contact } from './contact.model';
 
 export class ContactListComponent implements OnInit, OnDestroy {
 
-    private subscription: Array <Subscription> = [];
+    private subscription: Array<Subscription> = [];
     private contacts: Contact[];
     private errorMessage: string;
     private selectedId: number;
@@ -51,7 +51,7 @@ export class ContactListComponent implements OnInit, OnDestroy {
     }
 
     public deleteItem(itemId: number) {
-       let subscription =  this.service.deleteContact(itemId).subscribe(
+        let subscription = this.service.deleteContact(itemId).subscribe(
             () => {
                 let subscription = this.service.getContacts().subscribe(
                     contacts => this.contacts = contacts,
@@ -62,5 +62,10 @@ export class ContactListComponent implements OnInit, OnDestroy {
             error => this.errorMessage = <any>error
         );
         this.subscription.push(subscription);
+    }
+
+    public addNewItem() {
+        this.router.navigate(['.',  this.selectedId ? { selectedId: this.selectedId} : {}], { replaceUrl: true })
+            .then(isSucces => this.router.navigate(['/contact']));
     }
 }
