@@ -1,0 +1,55 @@
+<h3 *ngIf="isNewContact">Add New Contact</h3>
+<h3 *ngIf="!isNewContact">Edit Contact: {{contact.name}} </h3>
+
+<form [formGroup]="contactForm" (ngSubmit)="onSubmit()" class="form-horizontal col-xs-12 col-sm-9 col-md-6 col-lg-4">
+	<div *ngIf="contact.id" class="form-group">
+		<label class="control-label col-xs-3 hidden-xs" for="id">ID:</label>
+		<div class="col-xs-12 col-sm-9">
+			<input class="form-control col-xs-12 col-sm-9" id="id" name="id" formControlName="id">
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="control-label col-xs-3 hidden-xs" for="name">Name:</label>
+		<div class="col-xs-12 col-sm-9">
+			<input class="form-control col-xs-12 col-sm-9" id="name" name="name" formControlName="name" placeholder="Contact name" required>
+		</div>
+	</div>
+	<div *ngIf="formErrors.name" class="alert alert-danger">
+			{{ formErrors.name }}
+	</div>
+
+	<div class="form-group">
+		<label class="control-label col-xs-3 hidden-xs" for="family">Family:</label>
+		<div class="col-xs-12 col-sm-9">
+			<input class="form-control col-xs-12 col-sm-9" id="family" name="family" formControlName="family" placeholder="Contact family" required>
+		</div>
+	</div>
+	<div *ngIf="formErrors.family" class="alert alert-danger">
+			{{ formErrors.family }}
+	</div>
+
+	<div class="form-group">
+		<label class="control-label col-xs-3 hidden-xs" for="email">Email:</label>
+		<div class="col-xs-12 col-sm-9">
+			<input class="form-control col-xs-12 col-sm-9" id="email" name="email" formControlName="email" placeholder="Email">
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="control-label col-xs-3 hidden-xs" for="phone">Phone:</label>
+		<div class="col-xs-12 col-sm-9">
+			<input class="form-control col-xs-12 col-sm-9" id="phone" name="phone" formControlName="phone" placeholder="Phone">
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="control-label col-xs-3 hidden-xs" for="address">Address:</label>
+		<div class="col-xs-12 col-sm-9">
+			<input class="form-control col-xs-12 col-sm-9" id="address" name="address" formControlName="address" placeholder="Address">
+		</div>
+	</div>
+
+	<button type="submit" class="btn btn-primary" [disabled]="!contactForm.valid">Submit</button>
+	<button type="button" class="btn btn-danger" (click)="resetForm()">Reset</button>
+  <button type="button" class="btn btn-default" (click)="goBack()">Cancel</button>
+</form>
