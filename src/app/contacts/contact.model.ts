@@ -14,6 +14,5 @@ export class Contact implements Identifiable {
     public email? : string,
     public phone?:  string,
     public address?: string,
-
     ) {}
 }
